@@ -2,6 +2,7 @@ mod battery;
 mod cpu;
 mod disk;
 mod network;
+mod processes;
 mod system;
 mod temperature;
 
@@ -74,6 +75,25 @@ fn main() -> std::io::Result<()> {
         "Temps de fonctionnement : {:.0} secondes",
         system.uptime_seconds
     );
+
+    let mut processes = processes::get_processes()?;
+    let process_count = processes.len();
+    processes.sort_by(|a, b| b.memory_kb.cmp(&a.memory_kb));
+    processes.truncate(10);
+
+    println!("\nProcessus");
+    println!("Nombre total : {process_count}");
+    if processes.is_empty() {
+        println!("Aucun processus détecté.");
+    } else {
+        println!("Top {} par mémoire résidente :", processes.len());
+        for process in processes {
+            println!(
+                "PID: {} | Nom: {} | État: {} | Mémoire: {} Ko",
+                process.pid, process.name, process.state, process.memory_kb
+            );
+        }
+    }
 
     Ok(())
 }
