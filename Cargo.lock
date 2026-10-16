@@ -513,6 +513,7 @@ dependencies = [
  "crossterm",
  "nix",
  "ratatui",
+ "serde_json",
  "tokio",
  "tower-http",
 ]
