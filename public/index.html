@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#101820">
+    <title>TOPRS — Hello, world!</title>
+    <style>
+      :root {
+        color-scheme: dark;
+        font-family: Inter, ui-sans-serif, system-ui, sans-serif;
+        background: #101820;
+        color: #f1f5f9;
+      }
+
+      body {
+        min-height: 100vh;
+        margin: 0;
+        display: grid;
+        place-items: center;
+        background:
+          radial-gradient(ellipse at 50% 42%, #183747 0, transparent 58%),
+          #101820;
+      }
+
+      main {
+        padding: 3rem;
+        text-align: center;
+      }
+
+      p {
+        color: #43d9c0;
+        font-size: 0.8rem;
+        font-weight: 700;
+        letter-spacing: 0.2em;
+      }
+
+      h1 {
+        margin: 1rem 0;
+        font-size: clamp(2.5rem, 8vw, 5rem);
+        letter-spacing: -0.06em;
+      }
+
+      span {
+        color: #43d9c0;
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <p>TOPRS · SERVEUR WEB</p>
+      <h1>Hello, <span>world!</span></h1>
+    </main>
+  </body>
+</html>

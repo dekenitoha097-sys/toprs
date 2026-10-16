@@ -21,6 +21,24 @@ cargo build --release
 ./target/release/toprs --console
 ```
 
+## Serveur web
+
+Le serveur sert les fichiers statiques du dossier `public/` sur `127.0.0.1:3000`.
+La page d'accueil se trouve dans `public/index.html`.
+
+```bash
+cargo run -- --web
+```
+
+L'option courte `-w` est également disponible :
+
+```bash
+cargo run -- -w
+```
+
+Ouvre ensuite <http://127.0.0.1:3000> dans ton navigateur. Arrête le serveur
+avec `Ctrl+C`.
+
 ## Commandes clavier
 
 - `q` ou `Échap` : quitter
