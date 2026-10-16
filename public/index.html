@@ -1,0 +1,139 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#0b1118">
+    <title>TOPRS — Centre de supervision</title>
+    <link rel="stylesheet" href="/styles.css">
+    <script src="/app.js" defer></script>
+  </head>
+  <body>
+    <main class="dashboard">
+      <header class="topbar">
+        <div class="brand">
+          <div class="brand-mark" aria-hidden="true">T</div>
+          <div>
+            <p class="eyebrow">TOPRS · OPERATIONS</p>
+            <h1>Centre de supervision</h1>
+          </div>
+        </div>
+        <div class="header-actions">
+          <div id="live" class="live"><span class="live-dot"></span><span id="live-label">Connexion…</span></div>
+          <button id="refresh" class="refresh" type="button">Actualiser</button>
+        </div>
+      </header>
+
+      <section class="intro">
+        <div>
+          <h2>Vue d’ensemble</h2>
+          <p id="host-summary">Collecte des métriques système…</p>
+        </div>
+        <p id="updated" class="updated">En attente des premières données</p>
+      </section>
+
+      <div id="notice" class="notice" role="status" hidden></div>
+
+      <section class="metrics" aria-label="Ressources système">
+        <article class="card metric-card">
+          <div class="card-heading"><span class="card-label">Processeur</span><span class="icon">CPU</span></div>
+          <div class="cpu-reading">
+            <div class="cpu-core-reading">
+              <strong id="cpu-value">—</strong>
+              <span>cœurs logiques</span>
+            </div>
+            <div class="cpu-copy">
+              <span id="cpu-sub">—</span>
+            </div>
+          </div>
+        </article>
+
+        <article class="card metric-card">
+          <div class="card-heading"><span class="card-label">Mémoire vive</span><span class="icon">RAM</span></div>
+          <div id="memory-gauge" class="gauge" style="--gauge-color: var(--teal); --gauge-angle: -90deg">
+            <svg viewBox="0 0 120 74" aria-hidden="true">
+              <path class="gauge-track" d="M 15 65 A 45 45 0 0 1 105 65"/>
+              <path id="memory-arc" class="gauge-arc" d="M 15 65 A 45 45 0 0 1 105 65"/>
+              <line class="gauge-needle" x1="60" y1="65" x2="60" y2="26"/>
+              <circle class="gauge-hub" cx="60" cy="65" r="4"/>
+            </svg>
+            <strong id="memory-value" class="gauge-value">—</strong>
+          </div>
+          <div id="memory-sub" class="metric-sub">—</div>
+        </article>
+
+        <article class="card metric-card">
+          <div class="card-heading"><span class="card-label">Stockage · /</span><span class="icon">SSD</span></div>
+          <div id="disk-gauge" class="gauge" style="--gauge-color: #b69cff; --gauge-angle: -90deg">
+            <svg viewBox="0 0 120 74" aria-hidden="true">
+              <path class="gauge-track" d="M 15 65 A 45 45 0 0 1 105 65"/>
+              <path id="disk-arc" class="gauge-arc" d="M 15 65 A 45 45 0 0 1 105 65"/>
+              <line class="gauge-needle" x1="60" y1="65" x2="60" y2="26"/>
+              <circle class="gauge-hub" cx="60" cy="65" r="4"/>
+            </svg>
+            <strong id="disk-value" class="gauge-value">—</strong>
+          </div>
+          <div id="disk-sub" class="metric-sub">—</div>
+        </article>
+
+        <article class="card metric-card">
+          <div class="card-heading"><span class="card-label">Swap</span><span class="icon">SW</span></div>
+          <div id="swap-gauge" class="gauge" style="--gauge-color: var(--amber); --gauge-angle: -90deg">
+            <svg viewBox="0 0 120 74" aria-hidden="true">
+              <path class="gauge-track" d="M 15 65 A 45 45 0 0 1 105 65"/>
+              <path id="swap-arc" class="gauge-arc" d="M 15 65 A 45 45 0 0 1 105 65"/>
+              <line class="gauge-needle" x1="60" y1="65" x2="60" y2="26"/>
+              <circle class="gauge-hub" cx="60" cy="65" r="4"/>
+            </svg>
+            <strong id="swap-value" class="gauge-value">—</strong>
+          </div>
+          <div id="swap-sub" class="metric-sub">—</div>
+        </article>
+      </section>
+
+      <section class="content">
+        <article class="card process-card">
+          <div class="section-head">
+            <h3>Processus actifs</h3>
+            <span id="process-count" class="section-meta">—</span>
+          </div>
+          <div class="process-toolbar">
+            <span class="section-meta">Triés par mémoire résidente · 100 premiers</span>
+            <input id="process-search" class="search" type="search" placeholder="Rechercher…" aria-label="Rechercher un processus">
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>PID</th><th>PROCESSUS</th><th>ÉTAT</th><th>MÉMOIRE</th></tr></thead>
+              <tbody id="process-rows"><tr><td colspan="4" class="empty">Chargement des processus…</td></tr></tbody>
+            </table>
+          </div>
+        </article>
+
+        <aside class="side-stack">
+          <article class="card info-card">
+            <div class="section-head"><h3>Énergie</h3><span class="section-meta">Batterie</span></div>
+            <div id="battery-list" class="info-list"><div class="empty">Chargement…</div></div>
+          </article>
+          <article class="card info-card">
+            <div class="section-head"><h3>Réseau</h3><span class="section-meta">Cumulé</span></div>
+            <div id="network-list" class="info-list network-list"><div class="empty">Chargement…</div></div>
+          </article>
+          <article class="card info-card">
+            <div class="section-head"><h3>Thermique</h3><span class="section-meta">Capteurs</span></div>
+            <div id="temperature-list" class="info-list compact-list"><div class="empty">Chargement…</div></div>
+          </article>
+          <article class="card system-card">
+            <div class="section-head"><h3>Système</h3><span class="section-meta">Hôte</span></div>
+            <div class="system-list">
+              <div><span>Nom de l’hôte</span><strong id="hostname">—</strong></div>
+              <div><span>Noyau Linux</span><strong id="kernel">—</strong></div>
+              <div><span>Uptime</span><strong id="uptime">—</strong></div>
+            </div>
+          </article>
+        </aside>
+      </section>
+
+      <footer>TOPRS · Supervision locale · Actualisation automatique toutes les 2 secondes</footer>
+    </main>
+  </body>
+</html>

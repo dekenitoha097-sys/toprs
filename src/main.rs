@@ -1,42 +1,49 @@
 mod battery;
+mod console;
 mod cpu;
 mod disk;
+mod gui;
+mod memory;
+mod network;
+mod processes;
+mod system;
+mod temperature;
+mod web;
 
-fn main() -> std::io::Result<()> {
-    let cpu = cpu::get_cpu_info()?;
-    println!("Informations CPU");
-    println!("Modèle : {}", cpu.model);
-    println!("Cœurs logiques : {}", cpu.logical_cores);
+use clap::Parser;
 
-    println!("\nInformations batterie");
-    let batteries = battery::get_battery_info()?;
+#[derive(Debug, Parser)]
+#[command(
+    name = "toprs",
+    version,
+    about = "Moniteur système avec interfaces console et web",
+    arg_required_else_help = true
+)]
+struct Cli {
+    /// Lance le tableau de bord interactif dans le terminal
+    #[arg(short = 'c', long = "console", conflicts_with_all = ["web", "gui"])]
+    console: bool,
 
-    if batteries.is_empty() {
-        println!("Aucune batterie détectée.");
-    } else {
-        for battery in batteries {
-            println!("Nom : {}", battery.name);
-            println!(
-                "Charge : {}",
-                battery.capacity.map_or_else(
-                    || "indisponible".to_string(),
-                    |capacity| format!("{capacity}%")
-                )
-            );
-            println!(
-                "État : {}",
-                battery.status.as_deref().unwrap_or("indisponible")
-            );
-        }
+    /// Sert les fichiers du dossier public dans un serveur web local
+    #[arg(short = 'w', long = "web", conflicts_with = "gui")]
+    web: bool,
+
+    /// Ouvre l’interface graphique native
+    #[arg(short = 'g', long = "gui")]
+    gui: bool,
+}
+
+#[tokio::main]
+async fn main() -> Result<(), Box<dyn std::error::Error>> {
+    let cli = Cli::parse();
+
+    if cli.console {
+        console::run()?;
+    } else if cli.web {
+        web::run().await?;
+    } else if cli.gui {
+        gui::run()?;
     }
-
-    let disk = disk::get_disk_info("/")?;
-    let gib = 1024.0 * 1024.0 * 1024.0;
-    println!("\nInformations disque (/)");
-    println!("Utilisé : {:.2} Gio", disk.used_bytes as f64 / gib);
-    println!("Libre : {:.2} Gio", disk.free_bytes as f64 / gib);
-    println!("Disponible : {:.2} Gio", disk.available_bytes as f64 / gib);
-    println!("Total : {:.2} Gio", disk.total_bytes as f64 / gib);
 
     Ok(())
 }
