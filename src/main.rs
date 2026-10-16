@@ -1,6 +1,7 @@
 mod battery;
 mod cpu;
 mod disk;
+mod network;
 
 fn main() -> std::io::Result<()> {
     let cpu = cpu::get_cpu_info()?;
@@ -37,6 +38,18 @@ fn main() -> std::io::Result<()> {
     println!("Libre : {:.2} Gio", disk.free_bytes as f64 / gib);
     println!("Disponible : {:.2} Gio", disk.available_bytes as f64 / gib);
     println!("Total : {:.2} Gio", disk.total_bytes as f64 / gib);
+
+    let interfaces = network::get_network_info()?;
+    println!("\nInformations réseau");
+    if interfaces.is_empty() {
+        println!("Aucune interface réseau détectée.");
+    } else {
+        for interface in interfaces {
+            println!("Interface : {}", interface.interface);
+            println!("Reçus : {} octets", interface.received_bytes);
+            println!("Transmis : {} octets", interface.transmitted_bytes);
+        }
+    }
 
     Ok(())
 }
