@@ -2,6 +2,7 @@ mod battery;
 mod cpu;
 mod disk;
 mod network;
+mod temperature;
 
 fn main() -> std::io::Result<()> {
     let cpu = cpu::get_cpu_info()?;
@@ -48,6 +49,19 @@ fn main() -> std::io::Result<()> {
             println!("Interface : {}", interface.interface);
             println!("Reçus : {} octets", interface.received_bytes);
             println!("Transmis : {} octets", interface.transmitted_bytes);
+        }
+    }
+
+    let temperatures = temperature::get_temperatures()?;
+    println!("\nTempératures");
+    if temperatures.is_empty() {
+        println!("Aucun capteur thermique détecté.");
+    } else {
+        for temperature in temperatures {
+            println!(
+                "{} : {:.1} °C",
+                temperature.sensor, temperature.temperature_celsius
+            );
         }
     }
 
