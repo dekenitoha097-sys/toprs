@@ -1,6 +1,11 @@
-mod memory;
+mod cpu;
 
-fn main() {
-    let memory = memory::get_memory_info();
-    println!("{}", memory.unwrap().swap_total);
+fn main() -> std::io::Result<()> {
+    let cpu = cpu::get_cpu_info()?;
+
+    println!("Informations CPU");
+    println!("Modèle : {}", cpu.model);
+    println!("Cœurs logiques : {}", cpu.logical_cores);
+
+    Ok(())
 }
