@@ -8,7 +8,6 @@ pub struct ProcessInfo {
     pub name: String,
     pub state: String,
     pub memory_kb: u64,
-    pub cpu_percent: f64,
 }
 
 /// Récupère la liste des processus Linux.
@@ -37,7 +36,7 @@ pub fn get_processes() -> io::Result<Vec<ProcessInfo>> {
             continue;
         };
 
-        let Some((name, state, cpu_ticks)) = parse_stat(&stat) else {
+        let Some((name, state)) = parse_stat(&stat) else {
             continue;
         };
 
@@ -48,18 +47,14 @@ pub fn get_processes() -> io::Result<Vec<ProcessInfo>> {
             name,
             state,
             memory_kb,
-            cpu_percent: 0.0,
         });
-
-        // cpu_ticks sera utilisé pour calculer l'utilisation CPU.
-        let _ = cpu_ticks;
     }
 
     Ok(processes)
 }
 
 /// Analyse /proc/<PID>/stat.
-fn parse_stat(stat: &str) -> Option<(String, String, u64)> {
+fn parse_stat(stat: &str) -> Option<(String, String)> {
     // Le nom peut contenir des espaces et des parenthèses.
     let start = stat.find('(')?;
     let end = stat.rfind(')')?;
@@ -71,13 +66,7 @@ fn parse_stat(stat: &str) -> Option<(String, String, u64)> {
 
     let state = fields.first()?.to_string();
 
-    // utime = champ 14, stime = champ 15.
-    // Puisque fields[0] correspond au champ 3 :
-    // utime = fields[11], stime = fields[12].
-    let utime: u64 = fields.get(11)?.parse().ok()?;
-    let stime: u64 = fields.get(12)?.parse().ok()?;
-
-    Some((name, state, utime + stime))
+    Some((name, state))
 }
 
 /// Lit la mémoire résidente d'un processus.
