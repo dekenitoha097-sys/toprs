@@ -1,5 +1,6 @@
 mod battery;
 mod cpu;
+mod disk;
 
 fn main() -> std::io::Result<()> {
     let cpu = cpu::get_cpu_info()?;
@@ -28,6 +29,14 @@ fn main() -> std::io::Result<()> {
             );
         }
     }
+
+    let disk = disk::get_disk_info("/")?;
+    let gib = 1024.0 * 1024.0 * 1024.0;
+    println!("\nInformations disque (/)");
+    println!("Utilisé : {:.2} Gio", disk.used_bytes as f64 / gib);
+    println!("Libre : {:.2} Gio", disk.free_bytes as f64 / gib);
+    println!("Disponible : {:.2} Gio", disk.available_bytes as f64 / gib);
+    println!("Total : {:.2} Gio", disk.total_bytes as f64 / gib);
 
     Ok(())
 }
