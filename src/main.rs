@@ -2,6 +2,7 @@ mod battery;
 mod cpu;
 mod disk;
 mod network;
+mod system;
 mod temperature;
 
 fn main() -> std::io::Result<()> {
@@ -64,6 +65,15 @@ fn main() -> std::io::Result<()> {
             );
         }
     }
+
+    let system = system::get_system_info()?;
+    println!("\nInformations système");
+    println!("Nom de l’hôte : {}", system.hostname);
+    println!("Noyau Linux : {}", system.kernel);
+    println!(
+        "Temps de fonctionnement : {:.0} secondes",
+        system.uptime_seconds
+    );
 
     Ok(())
 }
