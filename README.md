@@ -1,6 +1,17 @@
 # toprs
 
-Tableau de bord interactif pour surveiller un système Linux depuis le terminal.
+Moniteur système Linux avec interfaces graphique, terminal et web.
+
+## Fenêtre graphique
+
+```bash
+cargo run -- --gui
+```
+
+L'option courte `-g` est également disponible. La fenêtre native affiche les
+ressources système et se rafraîchit automatiquement toutes les deux secondes.
+La vue principale et la liste des processus défilent pour permettre d'accéder
+à tous les processus, interfaces réseau et capteurs détectés.
 
 ## Lancer
 
